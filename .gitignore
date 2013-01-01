@@ -1,0 +1,158 @@
+@@ -0,0 +1,157 @@ 
+   1  +(function(){ 
+   2  +  if(!window.videoId){ 
+   3  +    return false; 
+   4  +  } 
+   5  +  var coverCss = [ 
+   6  +    '', 
+   7  +    'position:fixed', 
+   8  +    'top:0', 
+   9  +    'left:0', 
+   10  +    'bottom:0', 
+   11  +    'right:0', 
+   12  +    'background-color:rgba(255,255,255,0)', 
+   13  +    'z-index:999999999999', 
+   14  +    '-webkit-transition:background-color 0.2s ease;', 
+   15  +    '-moz-transition:background-color 0.2s ease;', 
+   16  +    '-o-transition:background-color 0.2s ease;', 
+   17  +    'transition:background-color 0.2s ease;', 
+   18  +    'pointer-events:none', 
+   19  +    '' 
+   20  +  ]; 
+   21  +  var videoCss = [ 
+   22  +    '', 
+   23  +    'position:absolute', 
+   24  +    'width:610px', 
+   25  +    'height:458px', 
+   26  +    'top:-500px', 
+   27  +    'left:50%', 
+   28  +    'margin-left:-306px', 
+   29  +    'border:1px solid #999', 
+   30  +    'z-index:1000000000000', 
+   31  +    'background:#000', 
+   32  +    'box-shadow:0 0 5px #333', 
+   33  +    '-webkit-transition:top 1s ease;', 
+   34  +    '-moz-transition:top 1s ease;', 
+   35  +    '-o-transition:top 1s ease;', 
+   36  +    'transition:top 1s ease;', 
+   37  +    '' 
+   38  +  ]; 
+   39  +  var aCss = [ 
+   40  +    '', 
+   41  +    'position:absolute', 
+   42  +    'bottom:0', 
+   43  +    'left:0', 
+   44  +    'right:0', 
+   45  +    'height:30px;', 
+   46  +    'text-align:center', 
+   47  +    'font-size:14px', 
+   48  +    'pointer-events:auto', 
+   49  +    '' 
+   50  +  ]; 
+   51  +   
+   52  +  var btnCss = [ 
+   53  +    '', 
+   54  +    'position:absolute', 
+   55  +    'top:0', 
+   56  +    'height:30px;', 
+   57  +    'line-height:30px', 
+   58  +    'width:60px', 
+   59  +    'text-align:center', 
+   60  +    'font-size:14px', 
+   61  +    'letter-spacing:-1px', 
+   62  +    'color:#014CCC', 
+   63  +    'cursor:pointer', 
+   64  +    'pointer-events:auto', 
+   65  +    '' 
+   66  +  ] 
+   67  +   
+   68  +  var HTML5Player = function(){ 
+   69  +    var cover = document.createElement('div'); 
+   70  +    cover.style.cssText += coverCss.join(';'); 
+   71  + 
+   72  +    var v = document.createElement('video'); 
+   73  + 
+   74  +    v.setAttribute('height','458'); 
+   75  +    v.setAttribute('width','610'); 
+   76  +    v.setAttribute('controls','true'); 
+   77  +    v.style.cssText += videoCss.join(';'); 
+   78  +    v.src = '/player/getM3U8/vid/'+videoId+'/type/mp4/flv/ts/'+(new Date()).getTime()+'/v.m3u8'; 
+   79  +     
+   80  +     
+   81  +    var a = document.createElement('a');     
+   82  +    var mp4Src = 'http://3g.youku.com/pvs?id='+videoId2+'&format=3gphd'; 
+   83  +    a.setAttribute('href',mp4Src); 
+   84  +    a.innerHTML = '不能直接观看，点击这里：'+mp4Src; 
+   85  +    a.style.cssText += aCss.join(';'); 
+   86  +    cover.appendChild(a); 
+   87  +     
+   88  +    var off = document.createElement('div'); 
+   89  +    off.innerHTML = '退出'; 
+   90  +    off.style.cssText += btnCss.join(';')+';right:0;'; 
+   91  +    cover.appendChild(off); 
+   92  +    var nocover = document.createElement('div'); 
+   93  +    nocover.innerHTML = '打开迷雾'; 
+   94  +    nocover.style.cssText += btnCss.join(';')+';right:60px;';; 
+   95  +    cover.appendChild(nocover); 
+   96  +     
+   97  +    off.addEventListener('click',function(){ 
+   98  +      y.HTML5.remove(); 
+   99  +      y.flash.add(); 
+   100  +      y.flag = false; 
+   101  +    },false); 
+   102  +     
+   103  +    nocover.addEventListener('click',function(){ 
+   104  +      cover.style.backgroundColor = 'rgba(255,255,255,0)'; 
+   105  +    },false); 
+   106  +       
+   107  +    return { 
+   108  +      add : function(){ 
+   109  +        document.body.appendChild(cover); 
+   110  +        document.body.appendChild(v); 
+   111  +        v.addEventListener('canplay',v.play); 
+   112  +        setTimeout(function(){ 
+   113  +          cover.style.backgroundColor = 'rgba(255,255,255,0.6)'; 
+   114  +          v.style.top = '-1px'; 
+   115  +        },100); 
+   116  +      }, 
+   117  +      remove : function(){ 
+   118  +        v.pause(); 
+   119  +        cover.style.backgroundColor = 'rgba(255,255,255,0)'; 
+   120  +        v.style.top = '-500px'; 
+   121  +        setTimeout(function(){ 
+   122  +          cover.parentNode && document.body.removeChild(cover); 
+   123  +          v.parentNode && document.body.removeChild(v); 
+   124  +        },1100); 
+   125  +      } 
+   126  +    } 
+   127  +  } 
+   128  + 
+   129  +  var flashPlayer = function(){ 
+   130  +    var flashOut = document.getElementById('player'); 
+   131  +    var flash = document.getElementById('movie_player'); 
+   132  +    return { 
+   133  +      add : function(){ 
+   134  +        flashOut.appendChild(flash); 
+   135  +      }, 
+   136  +      remove : function(){ 
+   137  +        flashOut.parentNode && flashOut.removeChild(flash); 
+   138  +      } 
+   139  +    } 
+   140  +  }   
+   141  +   
+   142  +  window.isYoukuHTML5PlayerBookMarkCodeByZythum = window.isYoukuHTML5PlayerBookMarkCodeByZythum || {}; 
+   143  +  var y = window.isYoukuHTML5PlayerBookMarkCodeByZythum; 
+   144  +  y.HTML5  = y.HTML5 || HTML5Player(); 
+   145  +  y.flash = y.flash || flashPlayer(); 
+   146  +  y.flag = y.flag || false; 
+   147  +  if(y.flag === false){ 
+   148  +    y.HTML5.add(); 
+   149  +    y.flash.remove(); 
+   150  +    y.flag = true; 
+   151  +  }else if(y.flag === true){ 
+   152  +    y.HTML5.remove(); 
+   153  +    y.flash.add(); 
+   154  +    y.flag = false; 
+   155  +  } 
+   156  + 
+   157  +})(); 
